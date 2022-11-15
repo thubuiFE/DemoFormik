@@ -2,6 +2,14 @@ import React, { useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import "./App.css";
+import FormResults from "./components/FormResult";
+
+interface FormValues {
+  email: string;
+  username: string;
+  github: string;
+  could_better: string;
+}
 
 function FormikYup() {
   const SignUpSchema = Yup.object().shape({
@@ -24,9 +32,14 @@ function FormikYup() {
   });
 
   const [isSubmit, setSubmit] = useState(false);
-  const [formValue, setFormValue] = useState({});
+  const [formValue, setFormValue] = useState({
+    email: "",
+    username: "",
+    could_better: "",
+    github: "",
+  });
 
-  const handleSubmit = (values) => {
+  const handleSubmit = (values: FormValues) => {
     setSubmit(true);
     setFormValue({
       ...values,
@@ -84,16 +97,7 @@ function FormikYup() {
                 </button>
               </Form>
             ) : (
-              <div className="result">
-                <span>Email: </span>
-                <div>{formValue?.email}</div>
-                <span>Username: </span>
-                <div>{formValue?.username}</div>
-                <span>Github: </span>
-                <div>{formValue?.github}</div>
-                <span>What could be better? </span>
-                <div>{formValue?.could_better}</div>
-              </div>
+              <FormResults formResult={formValue} />
             )}
           </>
         )}
