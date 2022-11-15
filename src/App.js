@@ -1,0 +1,114 @@
+import React, { useState } from "react";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
+import "./App.css";
+
+function FormikYup() {
+  function validateEmail(value) {
+    let error;
+    if (!value) {
+      error = "Required";
+    } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value)) {
+      error = "Invalid email address";
+    }
+    return error;
+  }
+
+  const SignUpSchema = Yup.object().shape({
+    could_better: Yup.string()
+      .min(5, "Should be 5 character long")
+      .max(15, "should not exceed 15 characters")
+      .required("Required"),
+
+    username: Yup.string()
+      .min(5, "Should be 5 character long")
+      .max(15, "should not exceed 15 characters")
+      .required("Required"),
+
+    email: Yup.string().email("Invalid email address").required("Required"),
+  });
+
+  const [isSubmit, setSubmit] = useState(false);
+  const [formValue, setFormValue] = useState({});
+
+  const handleSubmit = (values) => {
+    setSubmit(true);
+    setFormValue({
+      ...values,
+    });
+  };
+
+  return (
+    <div className="formik-feedback">
+      <h2>Formik Feedback</h2>
+      <Formik
+        initialValues={{
+          email: "",
+          username: "",
+          could_better: "",
+          github: "",
+        }}
+        validationSchema={SignUpSchema}
+        onSubmit={(values) => {
+          handleSubmit(values);
+        }}
+      >
+        {() => (
+          <>
+            {!isSubmit ? (
+              <Form>
+                <label htmlFor="email" className="label">
+                  <span style={{ color: "red" }}>*</span> Email
+                </label>
+                <Field
+                  name="email"
+                  validate={validateEmail}
+                  placeholder="Type your answer here"
+                />
+                <ErrorMessage name="email" component="span" />
+
+                <label htmlFor="could_better" className="label">
+                  <span style={{ color: "red" }}>*</span> What could be better?
+                </label>
+                <Field
+                  name="could_better"
+                  placeholder="Type your answer here"
+                />
+                <ErrorMessage name="could_better" component="span" />
+
+                <label htmlFor="username" className="label">
+                  <span style={{ color: "red" }}>*</span> Your Name
+                </label>
+                <Field name="username" placeholder="Type your answer here" />
+                <ErrorMessage name="username" component="span" />
+
+                <label htmlFor="github" className="label">
+                  Your GitHub profile URL (optional)
+                </label>
+                <Field name="github" placeholder="Type your answer here" />
+                <ErrorMessage name="github" component="span" />
+
+                <button type="submit" className="btn btn-success">
+                  Submit
+                </button>
+              </Form>
+            ) : (
+              <div className="result">
+                <span>Email: </span>
+                <div>{formValue?.email}</div>
+                <span>Username: </span>
+                <div>{formValue?.username}</div>
+                <span>Github: </span>
+                <div>{formValue?.github}</div>
+                <span>What could be better? </span>
+                <div>{formValue?.could_better}</div>
+              </div>
+            )}
+          </>
+        )}
+      </Formik>
+    </div>
+  );
+}
+
+export default FormikYup;
