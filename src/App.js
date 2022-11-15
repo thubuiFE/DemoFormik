@@ -4,16 +4,6 @@ import * as Yup from "yup";
 import "./App.css";
 
 function FormikYup() {
-  function validateEmail(value) {
-    let error;
-    if (!value) {
-      error = "Required";
-    } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value)) {
-      error = "Invalid email address";
-    }
-    return error;
-  }
-
   const SignUpSchema = Yup.object().shape({
     could_better: Yup.string()
       .min(5, "Should be 5 character long")
@@ -25,7 +15,12 @@ function FormikYup() {
       .max(15, "should not exceed 15 characters")
       .required("Required"),
 
-    email: Yup.string().email("Invalid email address").required("Required"),
+    email: Yup.string()
+      .required("Required")
+      .matches(
+        /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
+        "Invalid email address"
+      ),
   });
 
   const [isSubmit, setSubmit] = useState(false);
@@ -60,11 +55,7 @@ function FormikYup() {
                 <label htmlFor="email" className="label">
                   <span style={{ color: "red" }}>*</span> Email
                 </label>
-                <Field
-                  name="email"
-                  validate={validateEmail}
-                  placeholder="Type your answer here"
-                />
+                <Field name="email" placeholder="Type your answer here" />
                 <ErrorMessage name="email" component="span" />
 
                 <label htmlFor="could_better" className="label">
